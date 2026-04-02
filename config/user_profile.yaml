@@ -1,0 +1,43 @@
+personal_info:
+  first_name: "Jane"
+  last_name: "Doe"
+  email: "jane.doe@example.com"
+  phone: "123-456-7890"
+  location: "San Francisco, CA"
+  linkedin: "https://linkedin.com/in/janedoe"
+  github: "https://github.com/janedoe"
+  website: "https://janedoe.dev"
+
+job_preferences:
+  target_roles: ["Software Engineer", "Backend Developer", "Full Stack Engineer"]
+  locations: ["Remote", "San Francisco, CA"]
+  minimum_salary: 120000
+  visa_sponsorship_required: false
+
+master_resume:
+  summary: "Experienced software engineer specializing in backend development and cloud architecture."
+  experience:
+    - company: "Tech Innovators Inc."
+      title: "Software Engineer"
+      dates: "Jan 2021 - Present"
+      bullets:
+        - "Designed and implemented scalable RESTful APIs using Python and FastAPI."
+        - "Optimized database queries, reducing average response time by 30%."
+        - "Mentored junior developers and led code reviews."
+    - company: "Startup Beta"
+      title: "Junior Developer"
+      dates: "Jun 2019 - Dec 2020"
+      bullets:
+        - "Developed frontend features using React and Redux."
+        - "Assisted in migrating legacy systems to microservices architecture."
+  education:
+    - school: "State University"
+      degree: "B.S. Computer Science"
+      grad_year: "2019"
+  skills: ["Python", "JavaScript", "TypeScript", "SQL", "Docker", "AWS", "Git"]
+
+eeo_data:
+  gender: "Female"
+  race: "Asian"
+  veteran: "No"
+  disability: "No"
