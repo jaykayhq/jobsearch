@@ -1,6 +1,7 @@
 from src.applier.browser import BrowserManager
 from src.ai.mistral_client import AIClient
 import yaml
+import urllib.parse
 
 class LeverApplier:
     def __init__(self, browser: BrowserManager, ai: AIClient, profile_path="config/user_profile.yaml"):
@@ -14,6 +15,11 @@ class LeverApplier:
         Attempts to fill out and submit a Lever application form.
         Returns True if successful, False otherwise.
         """
+        parsed_url = urllib.parse.urlparse(job_url)
+        if parsed_url.scheme not in ['http', 'https']:
+            print(f"Error applying to lever ({job_url}): Invalid URL scheme '{parsed_url.scheme}'.")
+            return False
+
         page = self.browser.page
         try:
             # Lever application form is often on a separate URL (/apply)
