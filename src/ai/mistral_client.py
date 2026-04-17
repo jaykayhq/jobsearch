@@ -1,11 +1,10 @@
 import os
 import json
-import yaml
 from mistralai import Mistral
 from dotenv import load_dotenv
 
 class AIClient:
-    def __init__(self, profile_path="config/user_profile.yaml"):
+    def __init__(self, profile=None):
         load_dotenv()
         self.api_key = os.getenv("MISTRAL_API_KEY")
         if not self.api_key:
@@ -16,12 +15,7 @@ class AIClient:
         self.model = "mistral-large-latest" # Best for reasoning and complex text generation
 
         # Load user profile for context
-        try:
-            with open(profile_path, 'r') as f:
-                self.profile = yaml.safe_load(f)
-        except Exception as e:
-            print(f"Failed to load user profile: {e}")
-            self.profile = {}
+        self.profile = profile if profile is not None else {}
 
     def _get_json_completion(self, prompt: str) -> dict:
         """Helper to get guaranteed JSON output from Mistral."""

@@ -1,13 +1,11 @@
 from src.applier.browser import BrowserManager
 from src.ai.mistral_client import AIClient
-import yaml
 
 class GreenhouseApplier:
-    def __init__(self, browser: BrowserManager, ai: AIClient, profile_path="config/user_profile.yaml"):
+    def __init__(self, browser: BrowserManager, ai: AIClient):
         self.browser = browser
         self.ai = ai
-        with open(profile_path, 'r') as f:
-            self.profile = yaml.safe_load(f)
+        self.profile = self.ai.profile
 
     def apply(self, job_url: str) -> bool:
         """
