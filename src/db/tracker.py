@@ -6,11 +6,22 @@ import os
 class ApplicationTracker:
     def __init__(self, db_path="config/applications.db"):
         self.db_path = db_path
-        # Ensure the directory exists
-        os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
+        # Ensure the directory exists, skip if db_path is :memory: or just a filename
+        db_dir = os.path.dirname(self.db_path)
+        if db_dir:
+            os.makedirs(db_dir, exist_ok=True)
+
+        # For :memory: databases, we need to reuse the same connection
+        # because each call to connect(':memory:') creates a new, separate database
+        self._memory_conn = None
+        if self.db_path == ":memory:":
+            self._memory_conn = sqlite3.connect(self.db_path)
+
         self._initialize_db()
 
     def _get_connection(self):
+        if self._memory_conn is not None:
+            return self._memory_conn
         return sqlite3.connect(self.db_path)
 
     def _initialize_db(self):
