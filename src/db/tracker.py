@@ -8,10 +8,19 @@ class ApplicationTracker:
         self.db_path = db_path
         # Ensure the directory exists
         os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
+        # Use a persistent connection to improve performance
+        self._conn = sqlite3.connect(self.db_path, check_same_thread=False)
         self._initialize_db()
 
+    def __del__(self):
+        if hasattr(self, '_conn') and self._conn:
+            try:
+                self._conn.close()
+            except Exception:
+                pass
+
     def _get_connection(self):
-        return sqlite3.connect(self.db_path)
+        return self._conn
 
     def _initialize_db(self):
         with self._get_connection() as conn:
