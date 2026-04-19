@@ -17,6 +17,9 @@ class LinkedInEasyApply:
         """
         page = self.browser.page
         try:
+            if not job_url.startswith('https://www.linkedin.com/'):
+                raise ValueError("Invalid URL: Must start with https://www.linkedin.com/")
+
             page.goto(job_url, timeout=30000)
 
             # Note: LinkedIn requires login context. For true automation, you must
