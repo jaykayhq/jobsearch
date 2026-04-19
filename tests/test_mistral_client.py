@@ -49,5 +49,17 @@ class TestAIClient(unittest.TestCase):
         mock_getenv.assert_called_with("MISTRAL_API_KEY")
         mock_mistral_class.assert_called_once_with(api_key="fake-api-key")
 
+    @patch.dict(os.environ, {"MISTRAL_API_KEY": "fake_test_key"})
+    def test_profile_loading_error(self):
+        """
+        Test that when an invalid profile path is provided,
+        the AIClient handles the exception and sets profile to an empty dict.
+        """
+        # Provide a non-existent file path to trigger the Exception
+        client = AIClient(profile_path="non_existent_file.yaml")
+
+        # Verify that the profile defaults to an empty dictionary on failure
+        self.assertEqual(client.profile, {})
+
 if __name__ == '__main__':
     unittest.main()
