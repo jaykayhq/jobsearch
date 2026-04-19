@@ -2,6 +2,7 @@ from src.applier.browser import BrowserManager
 from src.ai.mistral_client import AIClient
 import yaml
 import time
+from urllib.parse import urlparse
 
 class LinkedInEasyApply:
     def __init__(self, browser: BrowserManager, ai: AIClient, profile_path="config/user_profile.yaml"):
@@ -15,6 +16,11 @@ class LinkedInEasyApply:
         Attempts to complete a LinkedIn Easy Apply workflow.
         Returns True if successful, False otherwise.
         """
+        parsed_url = urlparse(job_url)
+        if parsed_url.scheme not in ('http', 'https'):
+            print(f"Invalid URL scheme: {job_url}. Only http and https are allowed.")
+            return False
+
         page = self.browser.page
         try:
             if not job_url.startswith('https://www.linkedin.com/'):
