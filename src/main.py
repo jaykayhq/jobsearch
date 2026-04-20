@@ -1,4 +1,5 @@
 import time
+import yaml
 from src.ai.mistral_client import AIClient
 from src.db.tracker import ApplicationTracker
 from src.applier.browser import BrowserManager
@@ -11,8 +12,17 @@ def main():
     print("Starting Auto Job Applier AI...")
 
     tracker = ApplicationTracker()
+
+    profile_path = "config/user_profile.yaml"
     try:
-        ai = AIClient()
+        with open(profile_path, 'r') as f:
+            profile_data = yaml.safe_load(f)
+    except Exception as e:
+        print(f"Failed to load user profile: {e}")
+        profile_data = {}
+
+    try:
+        ai = AIClient(profile=profile_data)
     except ValueError as e:
         print(f"Configuration Error: {e}")
         print("Please check docs/SETUP.md for instructions.")

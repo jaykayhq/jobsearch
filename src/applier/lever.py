@@ -8,6 +8,7 @@ class LeverApplier:
     def __init__(self, browser: BrowserManager, ai: AIClient):
         self.browser = browser
         self.ai = ai
+        self.profile = self.ai.profile
         self.profile = ai.profile
 
     def apply(self, job_url: str) -> bool:
