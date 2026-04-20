@@ -1,5 +1,8 @@
 from src.applier.browser import BrowserManager
 from src.ai.mistral_client import AIClient
+import yaml
+import urllib.parse
+from urllib.parse import urlparse
 
 class GreenhouseApplier:
     def __init__(self, browser: BrowserManager, ai: AIClient):
@@ -12,6 +15,14 @@ class GreenhouseApplier:
         Attempts to fill out and submit a Greenhouse application form.
         Returns True if successful, False otherwise.
         """
+        parsed_url = urllib.parse.urlparse(job_url)
+        if parsed_url.scheme not in ['http', 'https']:
+            print(f"Error applying to Greenhouse ({job_url}): Invalid URL scheme '{parsed_url.scheme}'.")
+        parsed_url = urlparse(job_url)
+        if parsed_url.scheme not in ('http', 'https'):
+            print(f"Invalid URL scheme: {job_url}. Only http and https are allowed.")
+            return False
+
         page = self.browser.page
         try:
             page.goto(job_url, timeout=30000)
