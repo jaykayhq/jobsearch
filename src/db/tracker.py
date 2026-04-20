@@ -18,7 +18,9 @@ class ApplicationTracker:
             self._memory_conn = sqlite3.connect(self.db_path)
 
         # Ensure the directory exists
-        os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
+        db_dir2 = os.path.dirname(self.db_path)
+        if db_dir2:
+            os.makedirs(db_dir2, exist_ok=True)
         # Use a persistent connection to improve performance
         self._conn = sqlite3.connect(self.db_path, check_same_thread=False)
         self._initialize_db()

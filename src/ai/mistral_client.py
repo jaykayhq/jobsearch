@@ -1,53 +1,74 @@
 import os
 import json
-from mistralai import Mistral
+import urllib.request
 from dotenv import load_dotenv
 
 class AIClient:
     def __init__(self, profile=None):
         load_dotenv()
-        self.api_key = os.getenv("MISTRAL_API_KEY")
+        self.api_key = os.getenv("OPENROUTER_API_KEY")
         if not self.api_key:
-            raise ValueError("MISTRAL_API_KEY environment variable not found.")
+            raise ValueError("OPENROUTER_API_KEY environment variable not found.")
 
-        # Initialize the Mistral client
-        self.client = Mistral(api_key=self.api_key)
-        self.model = "mistral-large-latest" # Best for reasoning and complex text generation
+        self.model = "openrouter/free"
 
         # Load user profile for context
         self.profile = profile if profile is not None else {}
 
     def _get_json_completion(self, prompt: str) -> dict:
-        """Helper to get guaranteed JSON output from Mistral."""
+        """Helper to get guaranteed JSON output from OpenRouter."""
         messages = [
             {"role": "system", "content": "You are a professional career counselor and expert technical recruiter. You always return valid JSON."},
             {"role": "user", "content": prompt}
         ]
 
+        url = "https://openrouter.ai/api/v1/chat/completions"
+        headers = {
+            "Authorization": f"Bearer {self.api_key}",
+            "Content-Type": "application/json"
+        }
+        payload = {
+            "model": self.model,
+            "messages": messages,
+            "response_format": {"type": "json_object"}
+        }
+
+        data = json.dumps(payload).encode("utf-8")
+        req = urllib.request.Request(url, data=data, headers=headers)
+
         try:
-            chat_response = self.client.chat.complete(
-                model=self.model,
-                messages=messages,
-                response_format={"type": "json_object"}
-            )
-            content = chat_response.choices[0].message.content
-            return json.loads(content)
+            with urllib.request.urlopen(req) as response:
+                result = json.loads(response.read().decode())
+                content = result['choices'][0]['message']['content']
+                return json.loads(content)
         except Exception as e:
             print(f"AI API Error: {e}")
             return {}
 
     def _get_text_completion(self, prompt: str) -> str:
-         """Helper to get text output from Mistral."""
+         """Helper to get text output from OpenRouter."""
          messages = [
              {"role": "system", "content": "You are a professional career counselor and expert technical recruiter."},
              {"role": "user", "content": prompt}
          ]
+
+         url = "https://openrouter.ai/api/v1/chat/completions"
+         headers = {
+             "Authorization": f"Bearer {self.api_key}",
+             "Content-Type": "application/json"
+         }
+         payload = {
+             "model": self.model,
+             "messages": messages
+         }
+
+         data = json.dumps(payload).encode("utf-8")
+         req = urllib.request.Request(url, data=data, headers=headers)
+
          try:
-             chat_response = self.client.chat.complete(
-                 model=self.model,
-                 messages=messages
-             )
-             return chat_response.choices[0].message.content
+             with urllib.request.urlopen(req) as response:
+                 result = json.loads(response.read().decode())
+                 return result['choices'][0]['message']['content']
          except Exception as e:
              print(f"AI API Error: {e}")
              return ""
