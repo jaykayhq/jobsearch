@@ -1,7 +1,3 @@
-import requests
-import json
-from urllib.parse import urlparse
-
 class JobScraper:
     def __init__(self, queries: list[str] = None):
         self.queries = queries or ["software engineer"]
