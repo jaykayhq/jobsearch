@@ -6,11 +6,10 @@ import time
 from urllib.parse import urlparse
 
 class LinkedInEasyApply:
-    def __init__(self, browser: BrowserManager, ai: AIClient, profile_path="config/user_profile.yaml"):
+    def __init__(self, browser: BrowserManager, ai: AIClient):
         self.browser = browser
         self.ai = ai
-        with open(profile_path, 'r') as f:
-            self.profile = yaml.safe_load(f)
+        self.profile = ai.profile
 
     def apply(self, job_url: str) -> bool:
         """
