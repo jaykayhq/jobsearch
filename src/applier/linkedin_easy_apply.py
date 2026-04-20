@@ -3,6 +3,7 @@ from src.ai.mistral_client import AIClient
 import yaml
 import urllib.parse
 import time
+from urllib.parse import urlparse
 
 class LinkedInEasyApply:
     def __init__(self, browser: BrowserManager, ai: AIClient, profile_path="config/user_profile.yaml"):
@@ -19,10 +20,16 @@ class LinkedInEasyApply:
         parsed_url = urllib.parse.urlparse(job_url)
         if parsed_url.scheme not in ['http', 'https']:
             print(f"Error applying to linkedin_easy_apply ({job_url}): Invalid URL scheme '{parsed_url.scheme}'.")
+        parsed_url = urlparse(job_url)
+        if parsed_url.scheme not in ('http', 'https'):
+            print(f"Invalid URL scheme: {job_url}. Only http and https are allowed.")
             return False
 
         page = self.browser.page
         try:
+            if not job_url.startswith('https://www.linkedin.com/'):
+                raise ValueError("Invalid URL: Must start with https://www.linkedin.com/")
+
             page.goto(job_url, timeout=30000)
 
             # Note: LinkedIn requires login context. For true automation, you must

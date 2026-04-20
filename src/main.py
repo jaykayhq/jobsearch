@@ -27,9 +27,14 @@ def main():
     # 2. Filter & Evaluate
     print("\n[2] Evaluating Jobs...")
     jobs_to_apply = []
+
+    # Pre-fetch applied URLs in a single query to avoid N+1 issue
+    all_job_urls = [job['url'] for job in jobs]
+    applied_urls = tracker.get_applied_urls(all_job_urls)
+
     for job in jobs:
         url = job['url']
-        if tracker.has_applied(url):
+        if url in applied_urls:
             print(f"Skipping {url} (Already processed)")
             continue
 
