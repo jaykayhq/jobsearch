@@ -1,14 +1,11 @@
 import sys
-import pytest
+import unittest
 from unittest.mock import MagicMock, patch
 
 # Mock dependencies
 sys.modules['src.applier.browser'] = MagicMock()
 sys.modules['src.ai.mistral_client'] = MagicMock()
 sys.modules['yaml'] = MagicMock()
-import unittest
-from unittest.mock import MagicMock, patch
-import sys
 
 # Mock dependencies to bypass actual loading/parsing requirements for simple tests
 sys.modules['yaml'] = MagicMock()
@@ -55,9 +52,9 @@ class TestURLValidation(unittest.TestCase):
         self.mock_browser = MagicMock()
         self.mock_ai = MagicMock()
 
-        self.greenhouse = GreenhouseApplier(self.mock_browser, self.mock_ai, profile_path="dummy.yaml")
-        self.lever = LeverApplier(self.mock_browser, self.mock_ai, profile_path="dummy.yaml")
-        self.linkedin = LinkedInEasyApply(self.mock_browser, self.mock_ai, profile_path="dummy.yaml")
+        self.greenhouse = GreenhouseApplier(self.mock_browser, self.mock_ai)
+        self.lever = LeverApplier(self.mock_browser, self.mock_ai)
+        self.linkedin = LinkedInEasyApply(self.mock_browser, self.mock_ai)
 
     def test_valid_urls(self):
         valid_urls = [
@@ -65,9 +62,18 @@ class TestURLValidation(unittest.TestCase):
             "http://example.com/apply"
         ]
 
+        valid_urls_greenhouse_lever = [
+            "https://boards.greenhouse.io/example/jobs/123",
+            "http://example.com/apply"
+        ]
+
+        valid_urls_linkedin = [
+            "https://www.linkedin.com/jobs/view/123"
+        ]
+
         # We expect goto to be called if the URL is valid
         # We need to ensure we don't proceed with full apply logic for test simplicity
-        for url in valid_urls:
+        for url in valid_urls_greenhouse_lever:
             # Re-initialize mocks
             self.mock_browser.page.goto = MagicMock()
             self.mock_browser.page.is_visible = MagicMock(return_value=False)
@@ -83,6 +89,7 @@ class TestURLValidation(unittest.TestCase):
             self.assertFalse(self.lever.apply(url))
             self.mock_browser.page.goto.assert_called()
 
+        for url in valid_urls_linkedin:
             # Same for linkedin
             self.mock_browser.page.goto = MagicMock()
             self.mock_browser.page.is_visible = MagicMock(return_value=False)
